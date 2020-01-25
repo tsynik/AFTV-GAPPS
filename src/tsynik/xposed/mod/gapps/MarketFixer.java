@@ -38,7 +38,7 @@ public class MarketFixer implements IXposedHookLoadPackage
 			    	// allowed_network_types: -1, 2 (-1 - all, 2 - wifi)
 			    	// is_visible_in_downloads_ui: false / true
 			    	ContentValues cv = (ContentValues) param.args[1];
-			    	// if (BuildConfig.DEBUG) Log.d(TAG, "### IN ### CV " + cv.toString());
+			    	if (BuildConfig.DEBUG) Log.d(TAG, "### IN ### CV " + cv.toString());
 					// if (cv.containsKey("allowed_network_types")) {
 					//	long allowedNetworkTypes = cv.getAsLong("allowed_network_types");
 					//	if (BuildConfig.DEBUG) Log.d(TAG, "### IN ### allowed_network_types: " + allowedNetworkTypes);
@@ -50,6 +50,10 @@ public class MarketFixer implements IXposedHookLoadPackage
 							// cv.remove("is_public_api");
 							cv.put("is_public_api", 1);
 						}
+						if (cv.containsKey("otheruid")) {
+							if (BuildConfig.DEBUG) Log.d(TAG, "### otheruid ### FIX");
+							cv.remove("otheruid");
+						}
 						// fix allowed_network_types = all
 						if (cv.containsKey("uri") && !cv.containsKey("allowed_network_types")) {
 							if (BuildConfig.DEBUG) Log.d(TAG, "### allowed_network_types ### FIX");
@@ -57,7 +61,7 @@ public class MarketFixer implements IXposedHookLoadPackage
 							cv.put("allow_metered", true);
 						}
 			    	}
-					// if (BuildConfig.DEBUG) Log.d(TAG, "### DST CV ### " + cv.toString());
+					if (BuildConfig.DEBUG) Log.d(TAG, "### DST CV ### " + cv.toString());
 					param.args[1] = cv;
 		    	}
 			});
@@ -75,8 +79,11 @@ public class MarketFixer implements IXposedHookLoadPackage
 //					if (BuildConfig.DEBUG) Log.d(TAG, "### REC ### " + intent.toUri(0));
 //		    	}
 //			});
-			Class<?> iwh = XposedHelpers.findClass("iwh", lpparam.classLoader);
-			XposedHelpers.findAndHookMethod(iwh, "doInBackground", Object[].class, new XC_MethodHook() {
+			// fix "Unable to find %s in download manager"
+			// RCV referenced in DownloadBroadcastReceiver a()
+			// izz for com.android.vending 18.3.27
+			Class<?> RCV = XposedHelpers.findClassIfExists("izz", lpparam.classLoader);
+			if (RCV !=null) XposedHelpers.findAndHookMethod(RCV, "doInBackground", Object[].class, new XC_MethodHook() {
 				@Override
 				protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 					// return code 200 (SUCCESS)
@@ -85,6 +92,5 @@ public class MarketFixer implements IXposedHookLoadPackage
 		    	}
 			});
 		}
-
 	}
 }

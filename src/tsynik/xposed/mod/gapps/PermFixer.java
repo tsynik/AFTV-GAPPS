@@ -4,10 +4,11 @@ import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 @SuppressWarnings("WeakerAccess")
-public class SearchFixer implements IXposedHookLoadPackage {
+public class PermFixer implements IXposedHookLoadPackage {
 
-    static final String MOD_PACKAGE = "tsynik.xposed.mod.gapps";
-    static final String FIX_PACKAGE = "com.google.android.katniss";
+    // static final String MOD_PACKAGE = "tsynik.xposed.mod.gapps";
+    static final String SRC_PACKAGE = "com.google.android.katniss";
+    static final String SYS_PACKAGE = "com.android.tv.settings";
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam)

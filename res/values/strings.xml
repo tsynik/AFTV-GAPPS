@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">AFTV-GAPPS-XM</string>
+    <!-- add -->
+    <string name="temperatureobserver_thermalWarningText">Your Fire TV device is running at a high temperature; allow it to cool before handling. Please contact Amazon Customer Services if you have questions.</string>
+    <string name="thermal_warning_device_hot">Your device is hot - do not touch.</string>
+    <string name="thermal_warning_cool_down">Please discontinue use and allow the device to cool down.</string>
+    <string name="i18n_pn_generic" />
+    <string name="i18n_pn_short" />
+    <string name="i18n_pn_medium" />
+    <string name="i18n_pn_long" />
+    <string name="i18n_pn_full" />
+    <string name="i18n_pn_generational" />
+    <string name="def_datamonitoring_limit_header">90% Data Limit Exceeded</string>
+    <string name="def_datamonitoring_warning_reached">You have used %1$s GB of your %2$s GB data limit</string>
+    <string name="amazonshutdownmessage_power_off_message">Your $(pn) is Powering Off</string>
+    <string name="def_cod_notif_title">Unsupported HDMI Hub</string>
+    <string name="def_cod_notif_description">Your Fire TV is connected to an unsupported HDMI hub. This may impact performance.</string>
+    <string name="osd_name">Fire TV Stick</string>
+    <string name="amazonbootmessage_upgrading_title">Fire is upgrading…</string>
+    <string name="amazonbootmessage_upgrading_installing_text">Optimising system storage and applications…</string>
+    <string name="amazonbootmessage_upgrading_update_text">This will take approximately 10 minutes to complete</string>
 </resources>

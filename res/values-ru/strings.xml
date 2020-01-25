@@ -1,0 +1,20 @@
+<resources>
+    <string name="temperatureobserver_thermalWarningText">Ваш Fire TV работает при высокой температуре; дайте ему остыть. Пожалуйста, свяжитесь с сервисной службой Amazon, если у вас есть вопросы.</string>
+    <string name="thermal_warning_device_hot">Ваше устройство горячее - не трогайте.</string>
+    <string name="thermal_warning_cool_down">Пожалуйста, прекратите использование и дайте устройству остыть.</string>
+    <string name="i18n_pn_generic">Устройство</string>
+    <string name="i18n_pn_short">Медиаприставка</string>
+    <string name="i18n_pn_medium">Fire TV Stick 4K</string>
+    <string name="i18n_pn_long">Fire TV Stick 4K</string>
+    <string name="i18n_pn_full">Amazon Fire TV Stick 4K</string>
+    <string name="i18n_pn_generational">Amazon Fire TV Stick 4K (1-е поколение)</string>
+    <string name="def_datamonitoring_limit_header">Превышен лимит данных 90%</string>
+    <string name="def_datamonitoring_warning_reached">Вы использовали %1$s ГБ установленного лимита данных в %2$s ГБ</string>
+    <string name="amazonshutdownmessage_power_off_message">Ваш $(pn) выключается</string>
+    <string name="def_cod_notif_title">Неподдерживаемый концентратор HDMI</string>
+    <string name="def_cod_notif_description">Ваш Fire TV подключен к неподдерживаемому концентратору HDMI. Это может повлиять на производительность.</string>
+    <string name="osd_name">Fire TV Stick</string>
+    <string name="amazonbootmessage_upgrading_title">Fire TV обновляется…</string>
+    <string name="amazonbootmessage_upgrading_installing_text">Оптимизация хранилища и приложений…</string>
+    <string name="amazonbootmessage_upgrading_update_text">Это займет около 10 минут</string>
+</resources>

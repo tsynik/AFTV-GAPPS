@@ -48,8 +48,22 @@ public class LauncherFixer implements IXposedHookLoadPackage {
 			});
 
         }
+
+		if (lpparam.packageName.equals("com.amazon.tv.launcher")) {
+			// force frozenMode in Amazon Launcher
+			XposedHelpers.findAndHookMethod("com.amazon.tv.GlobalSettings", lpparam.classLoader, "getFrozenMode", new XC_MethodHook() {
+				@Override
+				protected void afterHookedMethod(MethodHookParam param) throws Throwable
+				{
+					if (BuildConfig.DEBUG) Log.i(TAG, "### GlobalSettings ### override getFrozenMode to true");
+					// FREEZE KFTV
+					param.setResult(true);
+				}
+			});
+		}
+
 		if (lpparam.packageName.equals("android")) {
-			// Use the alternate launcher instead of the Amazon launcher
+			// Use the leanback / user launcher instead of the Amazon launcher
 			XposedHelpers.findAndHookMethod("com.android.server.pm.PackageManagerService", lpparam.classLoader, "chooseBestActivity", Intent.class, String.class, int.class, List.class, int.class, new XC_MethodHook() {
 				@Override
 				protected void beforeHookedMethod(MethodHookParam param) throws Throwable
