@@ -83,12 +83,26 @@ public class MarketFixer implements IXposedHookLoadPackage
 			// RCV referenced in DownloadBroadcastReceiver a()
 			// izz for com.android.vending 18.3.27
 			Class<?> RCV = XposedHelpers.findClassIfExists("izz", lpparam.classLoader);
-			if (RCV !=null) XposedHelpers.findAndHookMethod(RCV, "doInBackground", Object[].class, new XC_MethodHook() {
+			if (RCV != null) XposedHelpers.findAndHookMethod(RCV, "doInBackground", Object[].class, new XC_MethodHook() {
 				@Override
 				protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
 					// return code 200 (SUCCESS)
 					// if (BuildConfig.DEBUG) Log.d(TAG, "### RET ### 200");
 					param.setResult(200);
+		    	}
+			});
+			// Break Market self-update routine ("Skipping DFE self-update")
+			// tfk for com.android.vending 18.3.27
+			Class<?> SU = XposedHelpers.findClassIfExists("tfk", lpparam.classLoader);
+			Class<?> P0 = XposedHelpers.findClassIfExists("tfd", lpparam.classLoader);
+			Class<?> P1 = XposedHelpers.findClassIfExists("dyh", lpparam.classLoader);
+			Class<?> P2 = XposedHelpers.findClassIfExists("dva", lpparam.classLoader);
+			if (SU != null && P0 != null && P1 != null && P2 != null) XposedHelpers.findAndHookMethod(SU, "a", P0, P1, P2, new XC_MethodHook() {
+				@Override
+				protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+					// return false
+					if (BuildConfig.DEBUG) Log.d(TAG, "### RET ### false");
+					param.setResult(false);
 		    	}
 			});
 		}
