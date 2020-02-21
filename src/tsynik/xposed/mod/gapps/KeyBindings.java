@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Map.Entry;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
@@ -25,6 +26,7 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 	private static final int LONG_PRESS = 0x80000000;
 	private static final String TAG = "KeyBindings";
 	private static String PhoneWindowMgr;
+	private static String FireTVKeyPolicyManager;
 	SparseArray<String> bindings;
 
 	@Override
@@ -34,7 +36,7 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 		// Add the home long press to nothing by default
 		bindings.put(LONG_PRESS | KeyEvent.KEYCODE_HOME, null);
 		// Google Search
-		bindings.put(LONG_PRESS | KeyEvent.KEYCODE_SEARCH, "com.google.android.katniss");
+		// bindings.put(LONG_PRESS | KeyEvent.KEYCODE_SEARCH, "com.google.android.katniss");
 	}
 
 	@Override
@@ -70,13 +72,16 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 				@Override
 				protected void afterHookedMethod(MethodHookParam param) throws Throwable
 				{
-					// Set the long press behavior to bring up the Recents dialog
 					// static final int LONG_PRESS_HOME_NOTHING = 0;
 					// static final int LONG_PRESS_HOME_RECENT_DIALOG = 1;
 					// static final int LONG_PRESS_HOME_RECENT_SYSTEM_UI = 2;
 					// static final int LONG_PRESS_HOME_VOICE_SEARCH = 3;
-					// Log.d(TAG, "### mLongPressOnHomeBehavior ### 0 ### ");
-					XposedHelpers.setIntField(param.thisObject, "mLongPressOnHomeBehavior", 0);
+					// Set the long press home behavior: 0 - nothing, 1 - recents, 2 - assist, 3 - custom
+					Log.d(TAG, "### mLongPressOnHomeBehavior ### 2 ### ");
+					XposedHelpers.setIntField(param.thisObject, "mLongPressOnHomeBehavior", 2);
+					// Set the double press home behavior: 0 - nothing, 1 - recents, 2 - custom
+					Log.d(TAG, "### mDoubleTapOnHomeBehavior ### 1 ### ");
+					XposedHelpers.setIntField(param.thisObject, "mDoubleTapOnHomeBehavior", 1);
 				}
 			});
 		}
@@ -87,6 +92,10 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 			protected void beforeHookedMethod(MethodHookParam param) throws Throwable
 			{
 				KeyEvent event = (KeyEvent)param.args[1];
+				boolean down = event.getAction() == 0;
+				int repeatCount = event.getRepeatCount();
+
+				// Log.d(TAG, "interceptKeyBeforeDispatching ### KEYCODE " + event.getKeyCode() + " RC " + repeatCount);
 				if (event.getAction() == KeyEvent.ACTION_DOWN)
 				{
 					int longPress = (event.getFlags() & KeyEvent.FLAG_LONG_PRESS) != 0 ? LONG_PRESS : 0;
@@ -103,8 +112,29 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 						if (BuildConfig.DEBUG) Log.d(TAG, " ### MENU_LONG ### ");
 						Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
 						((InputMethodManager) mContext.getSystemService("input_method")).showInputMethodPicker();
+						param.setResult(-1);
+					}
+					// ASSIST on MIC BTN PRESS
+					if (repeatCount == 0 & event.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
+						if (BuildConfig.DEBUG) Log.d(TAG, " ### SEARCH ### ");
+						Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
+						// Intent searchintent = mContext.getPackageManager().getLaunchIntentForPackage("com.google.android.katniss");
+						// mContext.startActivity(searchintent);
+						Intent searchintent = new Intent("android.intent.action.ASSIST");
+						mContext.sendBroadcast(searchintent);
+						param.setResult(-1);
 					}
 				}
+			}
+		});
+
+		FireTVKeyPolicyManager = "com.amazon.policy.keypolicymanager.FireTVKeyPolicyManager";
+		XposedHelpers.findAndHookMethod(FireTVKeyPolicyManager, lpparam.classLoader, "isFgAppAllowedToAcceptVoice", new XC_MethodHook() {
+			@Override
+			protected void beforeHookedMethod(MethodHookParam param) throws Throwable
+			{
+				if (BuildConfig.DEBUG) Log.i(TAG, "### override isFgAppAllowedToAcceptVoice to true");
+				param.setResult(true);
 			}
 		});
 	}
