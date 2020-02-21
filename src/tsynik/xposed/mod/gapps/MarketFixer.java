@@ -38,11 +38,7 @@ public class MarketFixer implements IXposedHookLoadPackage
 			    	// allowed_network_types: -1, 2 (-1 - all, 2 - wifi)
 			    	// is_visible_in_downloads_ui: false / true
 			    	ContentValues cv = (ContentValues) param.args[1];
-			    	if (BuildConfig.DEBUG) Log.d(TAG, "### IN ### CV " + cv.toString());
-					// if (cv.containsKey("allowed_network_types")) {
-					//	long allowedNetworkTypes = cv.getAsLong("allowed_network_types");
-					//	if (BuildConfig.DEBUG) Log.d(TAG, "### IN ### allowed_network_types: " + allowedNetworkTypes);
-					// }
+			    	if (BuildConfig.DEBUG) parseContentValues(cv);
 			    	if (cv.containsKey("notificationpackage") && cv.getAsString("notificationpackage").equals("com.android.vending")) {
 			    		// fix is_public_api = boolean
 						if (cv.containsKey("is_public_api") && cv.getAsString("is_public_api").equals("true")) {
@@ -61,7 +57,7 @@ public class MarketFixer implements IXposedHookLoadPackage
 							cv.put("allow_metered", true);
 						}
 			    	}
-					if (BuildConfig.DEBUG) Log.d(TAG, "### DST CV ### " + cv.toString());
+					if (BuildConfig.DEBUG) parseContentValues(cv);
 					param.args[1] = cv;
 		    	}
 			});
@@ -107,4 +103,14 @@ public class MarketFixer implements IXposedHookLoadPackage
 			});
 		}
 	}
+    public static void log(String msg) {
+        XposedBridge.log(TAG + " ===> " + msg);
+    }
+    private static void parseContentValues(ContentValues values) {
+        log("###############");
+        for (String name : values.keySet()) {
+            log(String.valueOf(name) + " : " + values.getAsString(name));
+        }
+        log("###############");
+    }
 }
