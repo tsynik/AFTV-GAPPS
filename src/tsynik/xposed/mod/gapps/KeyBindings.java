@@ -27,6 +27,7 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 	private static final String TAG = "KeyBindings";
 	private static String PhoneWindowMgr;
 	private static String FireTVKeyPolicyManager;
+
 	SparseArray<String> bindings;
 
 	@Override
@@ -35,8 +36,7 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 		bindings = new SparseArray<String>();
 		// Add the home long press to nothing by default
 		bindings.put(LONG_PRESS | KeyEvent.KEYCODE_HOME, null);
-		// Google Search
-		// bindings.put(LONG_PRESS | KeyEvent.KEYCODE_SEARCH, "com.google.android.katniss");
+		// bindings.put(LONG_PRESS | KeyEvent.KEYCODE_SEARCH, "com.google.android.katniss"); // Google Search
 	}
 
 	@Override
@@ -118,10 +118,21 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 					if (repeatCount == 0 & event.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
 						if (BuildConfig.DEBUG) Log.d(TAG, " ### SEARCH ### ");
 						Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
-						// Intent searchintent = mContext.getPackageManager().getLaunchIntentForPackage("com.google.android.katniss");
-						// mContext.startActivity(searchintent);
-						Intent searchintent = new Intent("android.intent.action.ASSIST");
-						mContext.sendBroadcast(searchintent);
+						//Intent searchintent = mContext.getPackageManager().getLaunchIntentForPackage("com.google.android.katniss");
+						//mContext.startActivity(searchintent);
+
+						Intent searchintent = new Intent(Intent.ACTION_ASSIST);
+						searchintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						searchintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+						searchintent.setPackage("com.google.android.katniss");
+						try {
+							mContext.startActivity(searchintent);
+						} catch (Throwable t) {
+							log(t);
+						}
+
+						// Intent searchintent = new Intent(Intent.ACTION_ASSIST);
+						// mContext.sendBroadcast(searchintent);
 						param.setResult(-1);
 					}
 				}
@@ -138,4 +149,7 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 			}
 		});
 	}
+    private static void log(Throwable msg) {
+        if (BuildConfig.DEBUG) XposedBridge.log(msg);
+    }
 }
