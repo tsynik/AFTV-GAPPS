@@ -70,13 +70,12 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 				@Override
 				protected void afterHookedMethod(MethodHookParam param) throws Throwable
 				{
-					// Set the long press behavior to bring up the Recents dialog
-					// static final int LONG_PRESS_HOME_NOTHING = 0;
-					// static final int LONG_PRESS_HOME_RECENT_DIALOG = 1;
-					// static final int LONG_PRESS_HOME_RECENT_SYSTEM_UI = 2;
-					// static final int LONG_PRESS_HOME_VOICE_SEARCH = 3;
-					// Log.d(TAG, "### mLongPressOnHomeBehavior ### 0 ### ");
-					XposedHelpers.setIntField(param.thisObject, "mLongPressOnHomeBehavior", 0);
+					// Set the long press home behavior: 0 - nothing, 1 - recents, 2 - assist, 3 - custom
+					Log.d(TAG, "### mLongPressOnHomeBehavior ### 2 ### ");
+					XposedHelpers.setIntField(param.thisObject, "mLongPressOnHomeBehavior", 2);
+					// Set the double press home behavior: 0 - nothing, 1 - recents, 2 - custom
+					Log.d(TAG, "### mDoubleTapOnHomeBehavior ### 1 ### ");
+					XposedHelpers.setIntField(param.thisObject, "mDoubleTapOnHomeBehavior", 1);
 				}
 			});
 		}
