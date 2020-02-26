@@ -46,7 +46,14 @@ public class LauncherFixer implements IXposedHookLoadPackage {
 					param.setResult(null);
 		    	}
 			});
-
+			// Search Orb
+			Class<?> SearchOrbView = XposedHelpers.findClass("com.google.android.leanbacklauncher.SearchOrbView", lpparam.classLoader);
+			XposedHelpers.findAndHookMethod(SearchOrbView, "useWahlbergUx", new XC_MethodHook() {
+				@Override
+				protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+					param.setResult(true);
+		    	}
+			});
         }
 
 		if (lpparam.packageName.equals("com.amazon.tv.launcher")) {
