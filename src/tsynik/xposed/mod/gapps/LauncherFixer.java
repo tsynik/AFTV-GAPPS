@@ -98,12 +98,13 @@ public class LauncherFixer implements IXposedHookLoadPackage {
 						// find launcher index
 						int index = 0;
 						for (int i=0; i < query.size(); i++) {
+							// if (BuildConfig.DEBUG) Log.d(TAG, i + " : " + query.get(i).activityInfo.name + " priority: " + query.get(i).priority);
 							if (query.get(i).activityInfo.name.contains("com.google.android.leanbacklauncher")) {
 								index = i;
 								if (BuildConfig.DEBUG) Log.d(TAG, "### L ### found leanbacklauncher at index " + index);
-								// break; // allow override with user launcher
+								break;
 							}
-							if (query.get(i).priority == 0) {
+							if (query.get(i).priority == 0) { // allow override with user launcher
 								index = i;
 								if (BuildConfig.DEBUG) Log.d(TAG, "### L ### found user launcher at index " + index);
 								break;
