@@ -6,12 +6,11 @@ import android.content.Context;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+//import android.view.ViewGroup;
+//import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import de.robv.android.xposed.IXposedHookInitPackageResources;
@@ -71,17 +70,36 @@ public class FireOSRes implements IXposedHookZygoteInit
 		XResources.setSystemWideReplacement("amazon.fireos", "bool", "config_amazonusagestats_process_device_mode", false);
 		// Launcher OOM Adjust
 		XResources.setSystemWideReplacement("amazon.fireos", "array", "config_amazonoomadjpolicy_homeAdjProcNames", new String[]{"com.google.android.leanbacklauncher", "com.amazon.tv.launcher", "com.amazon.ags.app"});
-		// Hook Power Off Layout
+		// Hook Power Off Layout amazonshutdownmessage_activity_powering_off
+		// <LinearLayout
+		//	android:gravity="center_horizontal"
+		//	android:orientation="vertical"
+		//	android:background="#ff000000"
+		//	android:paddingLeft="@android:dimen/config_inCallNotificationVolume"
+		//	android:paddingRight="@android:dimen/config_inCallNotificationVolume"
+		//	android:layout_width="fill_parent"
+		//	android:layout_height="fill_parent"
+		//	xmlns:android="http://schemas.android.com/apk/res/android">
+		//	<TextView
+		//		android:textAppearance="?android:textAppearanceSmall"
+		//		android:textColor="#ffffffff"
+		//		android:layout_gravity="center_horizontal"
+		//		android:id="@id/power_off_message"
+		//		android:paddingTop="@android:dimen/config_inCallNotificationVolume"
+		//		android:paddingBottom="@android:dimen/config_inCallNotificationVolume"
+		//		android:layout_width="wrap_content"
+		//		android:layout_height="wrap_content"
+		//		android:fontFamily="helvetica_lt_75_bold" />
+		// </LinearLayout>
 		XResources.hookSystemWideLayout("amazon.fireos", "layout", "amazonshutdownmessage_activity_powering_off", new XC_LayoutInflated() {
 			@Override
 			public void handleLayoutInflated(LayoutInflatedParam liparam) throws Throwable {
 				if (BuildConfig.DEBUG) Log.d(TAG, "### initZygote for amazonshutdownmessage_activity_powering_off");
 				liparam.view.setBackgroundColor(Color.parseColor("#BF010C12"));
-				Context context = (Context) AndroidAppHelper.currentApplication();
-				int width = (context.getResources().getDisplayMetrics().widthPixels / 2);
-				int height = (context.getResources().getDisplayMetrics().heightPixels / 2);
-				if (BuildConfig.DEBUG) Log.d(TAG, "### W : H ### " + width + " : " + height);
-
+				// Context context = (Context) AndroidAppHelper.currentApplication();
+				// int width = (context.getResources().getDisplayMetrics().widthPixels / 2);
+				// int height = (context.getResources().getDisplayMetrics().heightPixels / 2);
+				// if (BuildConfig.DEBUG) Log.d(TAG, "### W : H ### " + width + " : " + height);
 				TextView poweroff = (TextView) liparam.view.findViewById(liparam.res.getIdentifier("power_off_message", "id", "amazon.fireos"));
 				poweroff.setTextColor(Color.parseColor("#FFA724"));
 				poweroff.setTextSize(22.0f);
