@@ -13,5 +13,4 @@ aapt add $PROJ/bin/AFTV-GAPPS-XM.unaligned.apk classes.dex
 zipalign -f 4 $PROJ/bin/AFTV-GAPPS-XM.unaligned.apk $PROJ/bin/AFTV-GAPPS-XM.133t.apk
 
 # SIGN HERE
-
-
+./sign.sh

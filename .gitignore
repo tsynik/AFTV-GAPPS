@@ -5,3 +5,4 @@ gen
 obj
 classes.dex
 src/tsynik/xposed/mod/gapps/R.java
+sign.sh
