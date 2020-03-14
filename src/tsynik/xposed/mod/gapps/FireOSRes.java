@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -104,6 +105,7 @@ public class FireOSRes implements IXposedHookZygoteInit
 				poweroff.setTextColor(Color.parseColor("#FFA724"));
 				poweroff.setTextSize(22.0f);
 				poweroff.setPadding(60, 60, 60, 60);
+				poweroff.setTypeface(Typeface.create("helvetica_ne_lt_45_lt",Typeface.NORMAL)); // Amazon Ember Light
 			}
 		});
 	}
