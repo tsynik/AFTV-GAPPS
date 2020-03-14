@@ -102,12 +102,12 @@ public class LauncherFixer implements IXposedHookLoadPackage {
 							if (query.get(i).activityInfo.name.contains("com.google.android.leanbacklauncher")) {
 								index = i;
 								if (BuildConfig.DEBUG) Log.d(TAG, "### L ### found leanbacklauncher at index " + index);
-								break;
+								// break; // don't break here: allow override with user launcher
 							}
-							if (query.get(i).priority == 0) { // allow override with user launcher
+							else if (query.get(i).priority == 0) {
 								index = i;
 								if (BuildConfig.DEBUG) Log.d(TAG, "### L ### found user launcher at index " + index);
-								break;
+								break; // switch to 1st found user launcher
 							}
 						}
 						// if user or leanback launcher found and 1st one is Amazon Launcher
