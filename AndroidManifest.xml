@@ -23,7 +23,7 @@
 			android:value="82+"/>
 		<meta-data
 			android:name="xposeddescription"
-			android:value="Google TV Apps support module for FireOS 6"/>
+			android:value="@string/app_desc"/>
 	</application>
 
 </manifest>

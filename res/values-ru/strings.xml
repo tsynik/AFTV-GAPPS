@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_desc">Модуль поддержки приложений Google TV для Fire OS 6</string>
     <string name="temperatureobserver_thermalWarningText">Ваш Fire TV работает при высокой температуре; дайте ему остыть. Пожалуйста, свяжитесь с сервисной службой Amazon, если у вас есть вопросы.</string>
     <string name="thermal_warning_device_hot">Ваше устройство горячее - не трогайте.</string>
     <string name="thermal_warning_cool_down">Пожалуйста, прекратите использование и дайте устройству остыть.</string>

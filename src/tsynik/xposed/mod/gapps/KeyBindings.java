@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.InputMethodSubtype;
 import android.view.KeyEvent;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -18,6 +20,8 @@ import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
+
+import java.util.List;
 
 import tsynik.xposed.mod.gapps.BuildConfig;
 
@@ -73,10 +77,10 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 				protected void afterHookedMethod(MethodHookParam param) throws Throwable
 				{
 					// Set the long press home behavior: 0 - nothing, 1 - recents, 2 - assist, 3 - custom
-					Log.d(TAG, "### mLongPressOnHomeBehavior ### 2 ### ");
+					if (BuildConfig.DEBUG) Log.d(TAG, "### mLongPressOnHomeBehavior ### 2 ### ");
 					XposedHelpers.setIntField(param.thisObject, "mLongPressOnHomeBehavior", 2);
 					// Set the double press home behavior: 0 - nothing, 1 - recents, 2 - custom
-					Log.d(TAG, "### mDoubleTapOnHomeBehavior ### 1 ### ");
+					if (BuildConfig.DEBUG) Log.d(TAG, "### mDoubleTapOnHomeBehavior ### 1 ### ");
 					XposedHelpers.setIntField(param.thisObject, "mDoubleTapOnHomeBehavior", 1);
 				}
 			});
@@ -90,6 +94,7 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 				KeyEvent event = (KeyEvent)param.args[1];
 				boolean down = event.getAction() == 0;
 				int repeatCount = event.getRepeatCount();
+				int kbCount = 0;
 
 				// Log.d(TAG, "interceptKeyBeforeDispatching ### KEYCODE " + event.getKeyCode() + " RC " + repeatCount);
 				if (event.getAction() == KeyEvent.ACTION_DOWN)
@@ -107,8 +112,17 @@ public class KeyBindings implements IXposedHookZygoteInit, IXposedHookLoadPackag
 					if (longPress != 0 && event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
 						if (BuildConfig.DEBUG) Log.d(TAG, " ### MENU_LONG ### ");
 						Context mContext = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
-						((InputMethodManager) mContext.getSystemService("input_method")).showInputMethodPicker();
-						param.setResult(-1);
+						InputMethodManager inputMgr = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+						List<InputMethodInfo> inputMethodList = inputMgr.getEnabledInputMethodList();
+						for (InputMethodInfo method : inputMethodList) {
+							List<InputMethodSubtype> subMethods = inputMgr.getEnabledInputMethodSubtypeList(method, true);
+							for (InputMethodSubtype submethod : subMethods) {
+								if (submethod.getMode().equals("keyboard")) {
+									++kbCount;
+								}
+							}
+						}
+						if (kbCount > 1) inputMgr.showInputMethodPicker();
 					}
 					// ASSIST on MIC BTN PRESS
 					if (repeatCount == 0 & event.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
