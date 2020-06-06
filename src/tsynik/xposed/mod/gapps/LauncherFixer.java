@@ -23,8 +23,7 @@ public class LauncherFixer implements IXposedHookLoadPackage {
     static final String FIX_PACKAGE = "com.google.android.leanbacklauncher";
 
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam)
-            throws Throwable {
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
 
         if (lpparam.packageName.equals("com.google.android.leanbacklauncher")) {
 			// FC
