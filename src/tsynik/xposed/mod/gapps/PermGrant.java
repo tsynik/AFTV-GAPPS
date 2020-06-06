@@ -49,10 +49,10 @@ class PermGrant {
 						Object settings = XposedHelpers.getObjectField(param.thisObject, "mSettings");
 						Object permissions = XposedHelpers.getObjectField(settings, "mPermissions");
 						if (!grantedPerms.contains(PERM_ENABLE_KEYGUARD_FLAGS)) {
-							final Object pEnableHome = XposedHelpers.callMethod(permissions, "get", PERM_ENABLE_KEYGUARD_FLAGS);
+							final Object pmEnable = XposedHelpers.callMethod(permissions, "get", PERM_ENABLE_KEYGUARD_FLAGS);
 							grantedPerms.add(PERM_ENABLE_KEYGUARD_FLAGS);
 							int[] gpGids = (int[]) XposedHelpers.getObjectField(extras, "gids");
-							int[] bpGids = (int[]) XposedHelpers.getObjectField(pEnableHome, "gids");
+							int[] bpGids = (int[]) XposedHelpers.getObjectField(pmEnable, "gids");
 							//noinspection UnusedAssignment
 							gpGids = (int[]) XposedHelpers.callStaticMethod(param.thisObject.getClass(), "appendInts", gpGids, bpGids);
 						}
@@ -81,8 +81,8 @@ class PermGrant {
 						final Object settings = XposedHelpers.getObjectField(param.thisObject, "mSettings");
 						final Object permissions = XposedHelpers.getObjectField(settings, "mPermissions");
 						if (!grantedPerms.contains(PERM_ENABLE_KEYGUARD_FLAGS)) {
-							final Object pmEnableHome = XposedHelpers.callMethod(permissions, "get", PERM_ENABLE_KEYGUARD_FLAGS);
-							XposedHelpers.callMethod(ps, "grantInstallPermission", pmEnableHome);
+							final Object pmEnable = XposedHelpers.callMethod(permissions, "get", PERM_ENABLE_KEYGUARD_FLAGS);
+							XposedHelpers.callMethod(ps, "grantInstallPermission", pmEnable);
 							if (BuildConfig.DEBUG) Log.d(TAG, "### grant " + PERM_ENABLE_KEYGUARD_FLAGS);
 						}
 					}
